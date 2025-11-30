@@ -55,23 +55,20 @@ class Course:
     def __init__(self, course_id, course_name, monthly_price, duration, discount) -> None:
         self.course_id = course_id
         self.course_name = course_name
-        self.monthly_price = float(monthly_price)
+        self.monthly_price = Payment(monthly_price)
         self.duration = duration
         self.discount = discount
 
     def show_info(self):
         print(
-            f"ID Curso: {self.course_id}\n- Nombre: {self.course_name}\n- Precio por mes: ${self.monthly_price}\n- Duración (Meses): {self.duration}\n- Descuento (Pago Completo): {self.discount}%\n")
+            f"ID Curso: {self.course_id}\n- Nombre: {self.course_name}\n- Precio por mes: ${self.monthly_price.price}\n- Duración (Meses): {self.duration}\n- Descuento (Pago Completo): {self.discount}%\n")
 
     def show_payment_method(self):
         print(
-            f"\nModalidades de pago:\n\nCurso: {self.course_name}\n1. Pago completo ({self.discount}% de descuento): ${self.calc_full_payment()}\n2. Pago mensual (por {self.duration} meses): ${self.monthly_price}")
+            f"\nModalidades de pago:\n\nCurso: {self.course_name}\n1. Pago completo ({self.discount}% de descuento): ${self.calc_full_payment()}\n2. Pago mensual (por {self.duration} meses): ${self.monthly_price.price}")
 
     def calc_full_payment(self):
-        sub_total_price = self.monthly_price * self.duration
-        discount_value = sub_total_price * (self.discount / 100)
-
-        return sub_total_price - discount_value
+        return self.monthly_price.calc_discount(self.discount)
 
 
 class Student:
@@ -84,16 +81,25 @@ class Student:
 
     def show_info(self):
         print(
-            f"ID Estudiante: {self.student_id}\n- Nombre: {self.student_name}\n- ID Curso Matriculado: ${self.course_id}\n- Método de pago Elegido: {self.payment_method}\n")
+            f"ID Estudiante: {self.student_id}\n- Nombre: {self.student_name}\n- ID Curso Matriculado: {self.course_id}\n- Método de pago Elegido: {self.payment_method}\n")
 
 
-class PaymentMethod:
+class Payment:
 
-    def __init__(self, pay_method_id, pay_method_name, pay_method_increase, pay_method_discount) -> None:
-        self.pay_method_id = pay_method_id
-        self.pay_method_name = pay_method_name
-        self.pay_method_increase = pay_method_increase
-        self.pay_method_discount = pay_method_discount
+    def __init__(self, price) -> None:
+        self.price = price
+
+    def calc_increase(self, percent):
+        if percent > 0:
+            sub_price = self.price * (percent/100)
+            return self.price + sub_price
+        return float(0)
+
+    def calc_discount(self, percent):
+        if percent > 0:
+            sub_price = self.price * (percent/100)
+            return self.price - sub_price
+        return float(0)
 
 
 unad_school = School()
