@@ -1,6 +1,4 @@
-# --------------------------
-# CÓDIGO SOLUCIÓN PROBLEMA 5
-# --------------------------
+
 
 # Diccionario que almacena a los estudiantes con sus notas:
 REGISTRO = {}
