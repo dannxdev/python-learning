@@ -1,7 +1,7 @@
+import os
 
-
-# Diccionario que almacena a los estudiantes con sus notas:
-REGISTRO = {}
+# (Advertencia) Borra la consola al ejecutarlo.
+os.system('cls')
 
 # --------------------------
 # FUNCIONES
@@ -30,7 +30,7 @@ def registro_notas():
     return notas
 
 
-def registro_estudiantes():
+def registro_estudiantes(registro: dict):
     """
     Agrega a los estudiantes con sus respectivas notas 
     y promedio al diccionario REGISTRO.
@@ -55,7 +55,7 @@ def registro_estudiantes():
 
         while True:
             nombre = input("Nombre del Estudiante: ").capitalize()
-            if not nombre in REGISTRO:
+            if not nombre in registro:
                 # El nombre del estudiante no debe estar en el registro para que el bucle se detenga.
                 break
             print(f"El estudiante '{nombre}' ya se encuentra registrado(a).")
@@ -68,13 +68,13 @@ def registro_estudiantes():
         promedio = round(sum(notas) / len(notas), 2)
 
         # Se añade el estudiante al diccionario, con su lista de notas y promedio.
-        REGISTRO[nombre] = {"notas": notas, "promedio": promedio}
+        registro[nombre] = {"notas": notas, "promedio": promedio}
         print(f"\nEl estudiante {nombre} se ha registrado exitosamente.")
 
     print(f"\nSe han registrado {num_estudiantes} estudiantes exitosamente.")
 
 
-def ranking_estudiantes(registro):
+def ranking_estudiantes(registro: dict):
     """
     Recibe el registro de notas. Calcula y muestra el ranking de estudiantes (Mejor promedio, ordenados 
     de manera descendente y promedio general).
@@ -83,11 +83,8 @@ def ranking_estudiantes(registro):
     # Si hay estudiantes en el registro.
     if len(registro) > 0:
         # Diccionario que almacenara solamente el nombre y el promedio de notas.
-        promedios = {}
-
-        # Recorriendo cada estudiante del registro.
-        for estudiante, datos in registro.items():
-            promedios[estudiante] = datos['promedio']
+        promedios = {estudiante: datos['promedio']
+                     for estudiante, datos in registro.items()}
 
         # Convirtiendo los valores (promedios) en una sola lista.
         solo_promedios = list(promedios.values())
@@ -155,22 +152,31 @@ def main():
     Programa principal.
     """
 
+    # Diccionario que almacena a los estudiantes con sus notas:
+    registro_datos = {}
+
     while True:
         opcion = int(menu())
 
         if opcion == 1:
+            if len(registro_datos) > 0:
+                reg_opcion = input(
+                    '\nIniciar un nuevo registro (s/n): ').lower()
+                if reg_opcion == 's':
+                    registro_datos = {}
+                    print('Se ha vaciado el registro.')
             # Registrando a los estudiantes.
-            registro_estudiantes()
+            registro_estudiantes(registro_datos)
         elif opcion == 2:
             # Calculando y mostrando el ranking.
-            ranking_estudiantes(REGISTRO)
+            ranking_estudiantes(registro_datos)
         elif opcion == 3:
+            # Saliendo del programa.
             input("\nPresione ENTER para continuar.")
             print("\n")
             break
 
-        input("\nPresione ENTER para volver al menu.")
-        print("\n")
+        input("\nPresione ENTER para volver al menu.\n")
 
 
 # Ejecutando el programa principal.
