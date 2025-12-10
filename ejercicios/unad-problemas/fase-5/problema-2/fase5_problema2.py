@@ -1,5 +1,6 @@
 import os
 
+
 os.system('cls')
 
 
@@ -17,9 +18,8 @@ class Library:
                 return True
         return False
 
-    def add_book_to_category(self, category_id, book):
-        """
-        Añade libros a la biblioteca"""
+    def register_book(self, category_id, book):
+        """Añade libros a la biblioteca"""
 
         if isinstance(book, Book):
             for category in self.categories:
@@ -39,6 +39,32 @@ class Library:
 
             else:
                 print('Vacio')
+
+    def show_all_categories(self):
+        print("Categorias:")
+        for category in self.categories:
+            print(
+                f"- ID: '{category.category_id}' | '{category.category_name}'")
+
+    def all_categories_id_list(self):
+        categories_id = []
+
+        for category in self.categories:
+            categories_id.append(category.category_id)
+
+        return categories_id
+
+    def all_books_id_list(self):
+        """Crea una lista con todos los ID de los libros registrados"""
+
+        all_books_id = []
+
+        for category in self.categories:
+            if len(category.books) > 0:
+                for book in category.books:
+                    all_books_id.append(book.book_id)
+
+        return all_books_id
 
 
 class Category:
@@ -89,13 +115,58 @@ mi_biblioteca.add_category(literatura)
 mi_biblioteca.add_category(tecnologia)
 mi_biblioteca.add_category(historia)
 
-# Creando los libros:
-libro_1 = Book('B1', 'Cien años de soledad', 'Gabriel G. Marquez', 1969)
-libro_2 = Book('B2', 'Crimen y castigo', 'Fiodor Dostoviesky', 1869)
-libro_3 = Book('B3', 'Las 48 leyes del poder', 'Robert Greene', 1998)
 
-# Anadiendo libros a la biblioteca:
-mi_biblioteca.add_book_to_category('C2', libro_1)
-mi_biblioteca.add_book_to_category('C1', libro_3)
+def register_books(library: Library):
 
-mi_biblioteca.show_all_books()
+    print('REGISTRO DE LIBROS')
+
+    num_registers = 0
+
+    while True:
+        print('Ingrese los datos del libro')
+
+        while True:
+            book_id = input('ID del libro: ').upper()
+            if not book_id in library.all_books_id_list():
+                break
+            print('El ID ingresado ya esta ocupado.')
+
+        book_name = input('Nombre del libro: ').title()
+        book_author = input('Autor del libro: ').title()
+        book_edition = input('Edicion del libro: ')
+
+        new_book = Book(book_id, book_name, book_author, book_edition)
+
+        library.show_all_categories()
+
+        while True:
+            book_category_id = input('ID Categoria: ').upper()
+            if book_category_id in library.all_categories_id_list():
+                break
+            print('No existe ninguna categoria con ese ID.')
+
+        # Anadiendo el libro:
+        if library.register_book(book_category_id, new_book):
+            num_registers += 1
+            print('Se ha registrado el libro exitosamente')
+        else:
+            print('Ocurrio un error al registrar el libro. Intentelo denuevo.')
+
+        while True:
+            reg_opcion = input(
+                '\nIniciar un nuevo registro (s/n): ').lower()
+            if reg_opcion in ("s", "n"):
+                break
+            print('Opcion no valida.')
+
+        if reg_opcion == "n":
+            break
+
+    print(f"Se registraron {num_registers} libros.")
+
+    library.show_all_books()
+
+    print("Fin del registro.")
+
+
+register_books(mi_biblioteca)
