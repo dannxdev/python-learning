@@ -138,7 +138,7 @@ def menu():
     while True:
         opcion = input("\nSeleccione una opción (1-3): ")
         if opcion in ("1", "2", "3"):
-            return opcion
+            return int(opcion)
 
         print("Ingrese una opción valida.")
 
@@ -156,7 +156,7 @@ def main():
     registro_datos = {}
 
     while True:
-        opcion = int(menu())
+        opcion = menu()
 
         if opcion == 1:
             if len(registro_datos) > 0:
